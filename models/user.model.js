@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const UserSchema =new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     name:{
         type:String,
         trim:true,
@@ -14,6 +14,8 @@ const UserSchema =new mongoose.Schema({
         lowerCase:true,
         match:[/\S+@\S+\.\S+/,"please fill a valid email address"]
     }
-})
+},{timestamps:true})
+
 const User=mongoose.model("User",UserSchema);
+
 export default User;
