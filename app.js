@@ -25,5 +25,4 @@ app.listen(PORT, async () => {
     console.log(`Subscription Tracker Live at http://localhost:${PORT}`)
     await connectToDatabase()
 })
-
 export default app
