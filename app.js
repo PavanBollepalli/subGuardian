@@ -5,7 +5,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
 import subscriptionRouter from "./routes/subscription.routes.js";
 import connectToDatabase from "./database/mongodb.js";
-import errorMiddleWare from "./models/middlewares/error.middleware.js";
+import errorMiddleWare from "./middlewares/error.middleware.js";
 
 const app = express()
 app.use(express.json())

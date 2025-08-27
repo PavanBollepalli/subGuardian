@@ -1,5 +1,6 @@
 const errorMiddleWare=(err,req,res,next)=>{
     try{
+        console.log("Iam the dangerrr")
         let error = {...err}
         error.message=err.message
         console.error(error)
