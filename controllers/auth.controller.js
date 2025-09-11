@@ -9,6 +9,11 @@ export const signUp=async (req,res,next)=>{
     try{
         // signin logic here
         const {name,email,password}=req.body
+        if(!password){
+            const error=new Error("Password is required")
+            error.statusCode=400
+            throw error
+        }
         const userExists=await User.findOne({email})
         if(userExists){
             const error=new Error("User already exists")
@@ -40,24 +45,42 @@ export const signIn=async (req,res,next)=>{
     const session=await mongoose.startSession()
     session.startTransaction()
     try{
-    const {email,password}=req.body
-    const user= await User.findOne({email})
+        const {email,password}=req.body
+        const user= await User.findOne({email})
 
-    if (!user){
-        const error=new Error("Email doesnt exist")
-        error.statusCode=400
-        throw error
+        if (!user){
+            const error=new Error("Email doesn't exist")
+            error.statusCode=400
+            throw error
+        }
+
+        const isPasswordValid=await bcrypt.compare(password,user.password)
+
+        if(!isPasswordValid){
+            const error =new Error("Invalid Password")
+            error.statusCode=401
+            throw error
+        }
+
+        // generate jwt token
+        const token=jwt.sign({userId:user._id},JWT_SECRET,{expiresIn:JWT_EXPIRES_IN})
+        const userWithoutPassword=user.toObject()
+        delete userWithoutPassword.password
+        res.status(200).json({
+            success:true,
+            message:"User signed in successfully",
+            data:{
+                token,
+                user:userWithoutPassword
+            }
+        })
+        await session.commitTransaction()
+    }catch(error){
+        await session.abortTransaction()
+        next(error)
+    }finally{
+        session.endSession()
     }
-
-    const isPasswordValid=await bcrypt.compare(password,user.password)
-
-    if(!isPasswordValid){
-        const error =new Error("Invalid Password")
-        error.statusCode=401
-        throw error
-    }
-    }
-
 }
 
 export const signOut=(req,res,next)=>{
