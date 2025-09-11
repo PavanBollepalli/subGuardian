@@ -16,8 +16,7 @@ export const getUsers=async (req,res,next)=>{
 
 export const getUser=async (req,res,next)=>{
     try{
-        const {id}=req.params
-        const user=await User.findById(id).select("-password")
+        const user=await User.findById(req.userId).select("-password")
         if(!user){
             const error=new Error("User not found")
             error.statusCode=404
