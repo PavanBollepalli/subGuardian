@@ -36,8 +36,28 @@ export const signUp=async (req,res,next)=>{
     }
 }
 
-export const signIn=(req,res,next)=>{
-    res.send("Sign In")
+export const signIn=async (req,res,next)=>{
+    const session=await mongoose.startSession()
+    session.startTransaction()
+    try{
+    const {email,password}=req.body
+    const user= await User.findOne({email})
+
+    if (!user){
+        const error=new Error("Email doesnt exist")
+        error.statusCode=400
+        throw error
+    }
+
+    const isPasswordValid=await bcrypt.compare(password,user.password)
+
+    if(!isPasswordValid){
+        const error =new Error("Invalid Password")
+        error.statusCode=401
+        throw error
+    }
+    }
+
 }
 
 export const signOut=(req,res,next)=>{
