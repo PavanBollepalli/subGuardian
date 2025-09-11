@@ -81,7 +81,7 @@ SubscriptionModel.pre("save",function(next){
     if(this.renewalDate<new Date()){
         this.status='inactive'
     }
-    next
+    next()
 })
 const Subscription=mongoose.model("Subscription",SubscriptionModel)
 
