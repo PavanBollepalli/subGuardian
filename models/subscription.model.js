@@ -44,7 +44,7 @@ const SubscriptionModel=mongoose.Schema({
         required:true,
     },
     startDate:{
-        type:String,
+        type:Date,
         required:[true,'Start date is required'],
         validate:{
             validator:(value)=>value<new Date(),
@@ -52,10 +52,12 @@ const SubscriptionModel=mongoose.Schema({
         }
     },
     renewalDate:{
-        type:String,
-        required:[true,'Renewal date is required'],
+        type:Date,
+        // required:[true,'Renewal date is required'],
         validate:{
-            validator:(value)=>value>this.startDate,
+            validator:function (value) {
+                return value > this.startDate;
+            },
             message:'Renewal date must be after start date'
         }
     },
@@ -65,9 +67,13 @@ const SubscriptionModel=mongoose.Schema({
         required:[true,'User is required'],
         index:true 
     }
-},{options:{timestamps:true}})
+},{timestamps:true})
 
 SubscriptionModel.pre("save",function(next){
+    if (typeof this.startDate === 'string') {
+        this.startDate = new Date(this.startDate);
+    }
+
     if(!this.renewalDate){
         const renewalPeriod={
             daily:1,
