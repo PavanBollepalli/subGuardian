@@ -1,16 +1,17 @@
 import { Router } from "express";
 import authorize from "../middlewares/auth.middleware.js";
-import { createSubscription, getAllSubscriptions } from "../controllers/subscription.controller.js";
+import { createSubscription, getAllSubscriptions,getSubscriptionById } from "../controllers/subscription.controller.js";
 
 const subscriptionRouter = Router()
+
+// create a subscription
+subscriptionRouter.post('/', authorize, createSubscription)
+
 // get all subscriptions for a user
 subscriptionRouter.get('/', authorize, getAllSubscriptions)
 
-subscriptionRouter.get('/:id', (req, res) => {
-    res.send({ title: "Get subscriptions by id" })
-})
-// create a subscription
-subscriptionRouter.post('/', authorize, createSubscription)
+// get subscriptions by id and also check if the user is the owner
+subscriptionRouter.get('/:id',authorize, getSubscriptionById)
 
 subscriptionRouter.put('/:id', (req, res) => {
     res.send({ title: "put all subscriptions" })

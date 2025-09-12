@@ -35,3 +35,29 @@ export const getAllSubscriptions=async(req,res,next)=>{
         next(error)
     }
 }
+export const getSubscriptionById=async(req,res,next)=>{
+    try{
+        const subscription =await Subscription.findById(req.params.id)
+        if(!subscription){
+            const error=new Error("Subscription not found")
+            error.status=404
+            throw error
+        }
+        console.log("subscription.user:", subscription.user);
+console.log("req.userId:", req.userId);
+console.log("Types:", typeof subscription.user, typeof req.userId); 
+        if(subscription.user.toString()!==req.userId.toString()){
+            const error=new Error("You are not authorized to view this subscription")
+            error.status=403
+            throw error
+        }
+        res.status(200).json({
+            success:true,
+            message:"Subscription fetched successfully",
+            data:subscription
+        })
+    }
+    catch(error){
+        next(error)
+    }
+}
