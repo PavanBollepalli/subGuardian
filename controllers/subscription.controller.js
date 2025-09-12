@@ -14,13 +14,13 @@ export const createSubscription=async(req,res,next)=>{
         res.status(201).json({
             success:true,
             message:"Subscription created successfully",
-            data:subscription
+            data:subscription[0]
         })
     }catch(error){
         await session.abortTransaction()
         next(error)
     }finally{
-        await session.endSession()
+        session.endSession()
     }
 }
 export const getAllSubscriptions=async(req,res,next)=>{

@@ -47,7 +47,9 @@ const SubscriptionModel=mongoose.Schema({
         type:Date,
         required:[true,'Start date is required'],
         validate:{
-            validator:(value)=>value<new Date(),
+            validator:function(value){
+                return value<new Date();
+            },
             message:'Start date must be in the past'
         }
     },
@@ -61,7 +63,7 @@ const SubscriptionModel=mongoose.Schema({
             message:'Renewal date must be after start date'
         }
     },
-    user:{
+    user:{  
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:[true,'User is required'],
