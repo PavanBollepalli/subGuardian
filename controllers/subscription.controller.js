@@ -22,15 +22,20 @@ export const createSubscription = async (req, res, next) => {
 
     // Trigger workflow after commit
     console.log('Triggering workflow for subscriptionId:', subscription[0]._id);
-    await workflowClient.trigger({
-      url: `${SERVER_URL}/api/v1/workflows/subscription/reminders`,
-      body: { subscriptionId: subscription[0]._id },
-      headers: {
-        "content-type": "application/json"
-      },
-      retries: 0,
-    });
-    console.log('Workflow triggered successfully');
+    try {
+      await workflowClient.trigger({
+        url: `${SERVER_URL}/api/workflow/send-reminders`,
+        body: { subscriptionId: subscription[0]._id },
+        headers: {
+          "content-type": "application/json"
+        },
+        retries: 0,
+      });
+      console.log('Workflow triggered successfully');
+    } catch (triggerError) {
+      console.error('Workflow trigger failed:', triggerError.message);
+      // Optionally, don't throw here to avoid failing the subscription creation
+    }
 
     res.status(201).json({
       success: true,
@@ -47,6 +52,7 @@ export const createSubscription = async (req, res, next) => {
     session.endSession();
   }
 }
+
 export const getAllSubscriptions=async(req,res,next)=>{
     try{
         const subscriptions=await Subscription.find({user:req.userId})

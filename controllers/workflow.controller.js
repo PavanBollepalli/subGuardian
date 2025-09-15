@@ -8,7 +8,7 @@ import { sendReminderEmail } from '../utils/send-email.js'
 const REMINDERS = [7, 5, 2, 1, 0]
 
 export const sendReminders = serve(async (context) => {
-  console.log(`Workflow started for subscriptionId: ${context.requestPayload.subscriptionId}`);
+  console.log(`Workflow sendReminders triggered for subscriptionId: ${context.requestPayload.subscriptionId}`);
   const { subscriptionId } = context.requestPayload;
   const subscription = await fetchSubscription(context, subscriptionId);
 
